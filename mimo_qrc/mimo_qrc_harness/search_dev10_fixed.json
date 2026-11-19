@@ -1,0 +1,254 @@
+[
+  {
+    "method": "paper_dtc_qrc",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      211473,
+      174080,
+      147580,
+      134670,
+      129543,
+      128004,
+      127533
+    ],
+    "lmmse_errors": [
+      117540,
+      68125,
+      33361,
+      15411,
+      7664,
+      4828,
+      3954
+    ],
+    "points_beaten": 0,
+    "target_met": false,
+    "mean_candidate_ber": 0.21287910034937887,
+    "mean_lmmse_ber": 0.050725244241718426,
+    "wall_seconds": 136.7
+  },
+  {
+    "method": "paper_dtc_qrc_12",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      223320,
+      188705,
+      164548,
+      152258,
+      147163,
+      145543,
+      144846
+    ],
+    "lmmse_errors": [
+      117540,
+      68125,
+      33361,
+      15411,
+      7664,
+      4828,
+      3954
+    ],
+    "points_beaten": 0,
+    "target_met": false,
+    "mean_candidate_ber": 0.23582730816511388,
+    "mean_lmmse_ber": 0.050725244241718426,
+    "wall_seconds": 345.9
+  },
+  {
+    "method": "paper_esn",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      197768,
+      161843,
+      137994,
+      125968,
+      121231,
+      119695,
+      119297
+    ],
+    "lmmse_errors": [
+      117540,
+      68125,
+      33361,
+      15411,
+      7664,
+      4828,
+      3954
+    ],
+    "points_beaten": 0,
+    "target_met": false,
+    "mean_candidate_ber": 0.19891061723602485,
+    "mean_lmmse_ber": 0.050725244241718426,
+    "wall_seconds": 125.0
+  },
+  {
+    "method": "innov_sliced_ml_top3",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      115766,
+      51069,
+      17181,
+      7065,
+      3306,
+      1974,
+      1620
+    ],
+    "lmmse_errors": [
+      117540,
+      68125,
+      33361,
+      15411,
+      7664,
+      4828,
+      3954
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.0400291553442029,
+    "mean_lmmse_ber": 0.050725244241718426,
+    "wall_seconds": 14.7
+  },
+  {
+    "method": "innov_sliced_ml_top4",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      114877,
+      45946,
+      12321,
+      4506,
+      2025,
+      1182,
+      1018
+    ],
+    "lmmse_errors": [
+      117540,
+      68125,
+      33361,
+      15411,
+      7664,
+      4828,
+      3954
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.03677273388975155,
+    "mean_lmmse_ber": 0.050725244241718426,
+    "wall_seconds": 17.1
+  },
+  {
+    "method": "innov_sliced_ml_top5",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      115105,
+      43690,
+      9611,
+      3286,
+      1397,
+      840,
+      719
+    ],
+    "lmmse_errors": [
+      117540,
+      68125,
+      33361,
+      15411,
+      7664,
+      4828,
+      3954
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.03531152950310559,
+    "mean_lmmse_ber": 0.050725244241718426,
+    "wall_seconds": 26.6
+  },
+  {
+    "method": "innov_qrc_residual_top4",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      114862,
+      45916,
+      12331,
+      4528,
+      2024,
+      1182,
+      1023
+    ],
+    "lmmse_errors": [
+      117540,
+      68125,
+      33361,
+      15411,
+      7664,
+      4828,
+      3954
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.03677091420807453,
+    "mean_lmmse_ber": 0.050725244241718426,
+    "wall_seconds": 30.9
+  },
+  {
+    "method": "innov_qrc_refined_top5",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      115199,
+      43772,
+      9620,
+      3311,
+      1388,
+      833,
+      708
+    ],
+    "lmmse_errors": [
+      117540,
+      68125,
+      33361,
+      15411,
+      7664,
+      4828,
+      3954
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.03534852969720497,
+    "mean_lmmse_ber": 0.050725244241718426,
+    "wall_seconds": 38.1
+  },
+  {
+    "method": "innov_qrc_gated_top4",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      115434,
+      47619,
+      12983,
+      4899,
+      2366,
+      1461,
+      1230
+    ],
+    "lmmse_errors": [
+      117540,
+      68125,
+      33361,
+      15411,
+      7664,
+      4828,
+      3954
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.03760513716356108,
+    "mean_lmmse_ber": 0.050725244241718426,
+    "wall_seconds": 34.2
+  }
+]
