@@ -1,0 +1,7 @@
+dim W = 4   (lower bound: T >= 4)
+target vecs: ['0x20e', '0x67', '0x113', '0x2b0']
+menu size: 35
+bit 0: needs > 4 products — Q=8 infeasible for T=5
+
+menu vecs inside W: 0
+k=5 all-into-t NOT coverable from menu-in-W (0.0s)

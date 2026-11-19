@@ -1,0 +1,3 @@
+span lower bound T >= : 4
+T5 rank facts: {'rank_W': 4, 'menu_d2_zero': 76, 'menu_d2_inside_W': 0, 'menu_d2_outside_W': 420, 'T_ge_5_for_any_Q': True}
+bit0 needs-many (-1 = >4 products): -1

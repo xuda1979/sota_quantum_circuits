@@ -1,0 +1,4 @@
+f22_inv.py: output ok: True; executed_toffoli=0; qubits=4; TQ=0
+f23_inv.py: output ok: True; executed_toffoli=3; qubits=6; TQ=18
+f23 rank facts: {'rank_W': 3, 'menu_d2_zero': 36, 'menu_d2_inside_W': 84, 'menu_d2_outside_W': 0, 'T_ge_3_for_any_Q': True}
+TOWER OK

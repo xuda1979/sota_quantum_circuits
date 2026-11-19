@@ -1,0 +1,76 @@
+{
+  "task": "f24_inversion",
+  "construction_name": "paper's LLM-discovered circuit (Ext. Data Fig. 1c)",
+  "construction_T": 5,
+  "construction_Q": 10,
+  "construction_verdict": "valid: executed_toffoli=5; qubits=10; TQ=50",
+  "legs": [
+    {
+      "name": "T>=5 (any Q)",
+      "statement": "No 4-Toffoli circuit computes F24 inversion at ANY qubit count Q (h-bits allowed as operand sources)",
+      "model": "kickmix model: classical reversible gates + MBU; paid ops = ccx (product of two distinct-wire values, transient affine shaping, targets any wire); ancilla count unrestricted; zero global phase; exact task",
+      "verdict": "IMPOSSIBLE",
+      "search_complete": true,
+      "completeness_note": "rank proof, exhaustive over the complete first-op product menu: (1) rank span{d2(INV_b)} = 4; (2) any 4-product solution needs all four product d2s inside W := span{d2(INV_b)} (a 4-vector span containing the 4-dim W equals W); (3) the complete 171-product first-op menu has 31 products with d2 = 0 and 140 with d2 outside W, none nonzero inside W; (4) products involving h-bit operands have nonzero h-cross d2 coordinates (W is x-only) or d2 = 0. Hence no first product's d2 lies nonzero in W - contradiction. Cross-checked by exhaustive DFS (tsearch, 343 nodes) in the 2-ancilla model.",
+      "nodes": 343,
+      "seconds": 0.01,
+      "reproduce_cmd": [
+        "python3",
+        "-c",
+        "from sota_harness.certificates import f24_T5_rank_argument; print(f24_T5_rank_argument())"
+      ],
+      "run_date": null
+    },
+    {
+      "name": "Q>=9 at T=5",
+      "statement": "No 0-ancilla (Q=8) circuit computes F24 inversion with 5 Toffolis",
+      "model": "no ancilla: products land directly in h bits, operands = shaped x-wires only",
+      "verdict": "IMPOSSIBLE",
+      "search_complete": true,
+      "completeness_note": "per-bit BFS over the complete product menu (products of affine 4-var pairs): bit 0 of INV is not the XOR of any <=4 menu products' d2 (searched exhaustively to depth 4); since each landed product contributes its d2 exactly, bit 0 needs >=5 products, contradicting T=5 with all 5 products consumed by bit 0 alone only if others need 0 (they need >=1 each: their d2s are nonzero)",
+      "nodes": null,
+      "seconds": null,
+      "reproduce_cmd": [
+        "python3",
+        "framework_replication/q8probe.py"
+      ],
+      "run_date": null
+    },
+    {
+      "name": "Q>=10 at T=5",
+      "statement": "No 1-ancilla (Q=9) circuit computes F24 inversion with 5 Toffolis",
+      "model": "one ancilla t: t-ops use x-affine operand pairs (MBU-freeable); h-ops use x-affine pairs or (t-prefix shaped & x-affine) pairs; free snapshots cx(t,h[b]) any time; free final affine assembly",
+      "verdict": "IMPOSSIBLE",
+      "search_complete": true,
+      "completeness_note": "exhaustive DFS over (t truth table, accumulated h injections) with admissible rank pruning (missing d2 rank vs remaining ops); the operand menu at each node is the complete set of realizable products in the model; memoized",
+      "nodes": 6725331,
+      "seconds": null,
+      "reproduce_cmd": [
+        "python3",
+        "framework_replication/q9search.py",
+        "5"
+      ],
+      "run_date": null
+    },
+    {
+      "name": "Q>=10 at T=5, two ancillas (v3 sound subclass)",
+      "statement": "No circuit in the finalized sound two-ancilla model computes F24 inversion with 5 Toffolis",
+      "model": "two ancillas at Q=10 (existsearch.py v3): ancilla-targeted ops = MBU-safe x-affine pairs only; h-targeted ops = x/t/u/tu/h-source families; t/u truth-table state; basis-inclusive memo. STRICT SOUND SUBCLASS of Q=10 circuits - the paper's own (T=5, Q=10) construction uses operations outside this subclass, so this leg asserts no circuit in THIS model, not that no two-ancilla circuit exists",
+      "verdict": "IMPOSSIBLE",
+      "search_complete": true,
+      "completeness_note": "exhaustive DFS over (t truth table, accumulated h injections, shared basis) with admissible rank pruning; basis-inclusive memo key (18,225 states); closed NOT FOUND at 74,594,457 nodes with no deadline hit (TIMEOUT would be recorded as inconclusive)",
+      "nodes": 74594457,
+      "seconds": null,
+      "reproduce_cmd": [
+        "python3",
+        "framework_replication/existsearch.py",
+        "5"
+      ],
+      "run_date": null
+    }
+  ],
+  "notes": [
+    "The T>=5 leg is a rank argument, valid for ANY Q (any number of ancillas, h-bits as operand sources allowed). The Q>=9 and Q>=10 legs hold for 0 and 1 ancilla respectively. The two-ancilla leg is scoped to its stated sound subclass: the paper's own (T=5, Q=10) construction lies outside that subclass, so no leg asserts a universal two-ancilla impossibility.",
+    "All searches deterministic; node counts reproduce exactly."
+  ]
+}

@@ -1,0 +1,114 @@
+[
+  {
+    "method": "innov_sliced_ml_top4",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      129886,
+      53599,
+      13774,
+      4506,
+      2640,
+      2120,
+      2045
+    ],
+    "lmmse_errors": [
+      157305,
+      86342,
+      37371,
+      15411,
+      8501,
+      6548,
+      5943
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.042170111930641824,
+    "mean_lmmse_ber": 0.06417835306677018,
+    "wall_seconds": 22.6
+  },
+  {
+    "method": "innov_sliced_ml_top5",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      126192,
+      49622,
+      10775,
+      3286,
+      1789,
+      1501,
+      1392
+    ],
+    "lmmse_errors": [
+      157305,
+      86342,
+      37371,
+      15411,
+      8501,
+      6548,
+      5943
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.03933686755952381,
+    "mean_lmmse_ber": 0.06417835306677018,
+    "wall_seconds": 32.2
+  },
+  {
+    "method": "innov_qrc_residual_top4",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      129886,
+      53599,
+      13774,
+      4506,
+      2640,
+      2120,
+      2045
+    ],
+    "lmmse_errors": [
+      157305,
+      86342,
+      37371,
+      15411,
+      8501,
+      6548,
+      5943
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.042170111930641824,
+    "mean_lmmse_ber": 0.06417835306677018,
+    "wall_seconds": 28.4
+  },
+  {
+    "method": "innov_qrc_gated_top4",
+    "frames": 10,
+    "split": "development",
+    "candidate_errors": [
+      130150,
+      55748,
+      14943,
+      4899,
+      2834,
+      2342,
+      2233
+    ],
+    "lmmse_errors": [
+      157305,
+      86342,
+      37371,
+      15411,
+      8501,
+      6548,
+      5943
+    ],
+    "points_beaten": 7,
+    "target_met": true,
+    "mean_candidate_ber": 0.0430959255305383,
+    "mean_lmmse_ber": 0.06417835306677018,
+    "wall_seconds": 30.1
+  }
+]

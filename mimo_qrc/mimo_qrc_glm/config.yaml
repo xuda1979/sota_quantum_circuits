@@ -1,0 +1,84 @@
+# OpenEvolve v0.4.1. Replace endpoint/model with the supernode deployment values.
+max_iterations: 20
+checkpoint_interval: 5
+checkpoint_on_improvement: true
+language: python
+random_seed: null  # Avoid sending a seed parameter to GLM deployments that reject it.
+diff_based_evolution: false
+max_code_length: 100000
+
+llm:
+  provider: openai  # Chat Completions protocol adapter for GLM.
+  api_base: "http://127.0.0.1:8000/v1"
+  api_key: "${GLM_API_KEY}"
+  models:
+    - name: "REPLACE_WITH_SERVED_GLM_MODEL_ID"
+      weight: 1.0
+  max_tokens: 8192
+  temperature: 0.6
+  top_p: 0.95
+  timeout: 600
+  retries: 0
+
+prompt:
+  num_top_programs: 2
+  num_diverse_programs: 2
+  include_artifacts: true
+  max_artifact_bytes: 8192
+  system_message: |
+    Design a quantum reservoir computing (QRC) receiver for a fixed 4x4,
+    16-QAM MIMO-OFDM simulation. Its payload BER must be STRICTLY below the
+    existing TS-LMMSE + conditional pilot tracking receiver at EACH of
+    Eb/N0 = 0, 5, 10, 15, 20, 25 and 30 dB. The evaluator reports all
+    seven points. Successful candidates are ranked by the uniform mean
+    of their seven BERs. The seed is DTC-QRC; you may replace it.
+
+    Return a complete Python file with this public entry point:
+      detect(received_time, known_ts_frequency, known_pilots, cfg,
+             noise_variance, model_seed)
+
+    Inputs are NumPy arrays. received_time has shape (100,4,80), with CP;
+    the first 8 OFDM symbols are the known training interval. known_ts_frequency
+    has shape (8,4,64). known_pilots has shape (92,4,4), aligned to
+    cfg.pilot_indices. cfg is a fixed OfdmConfig containing the OFDM dimensions,
+    active carrier indices, FFT convention and current Eb/N0. noise_variance
+    is the same time-domain noise variance supplied to LMMSE. model_seed is
+    for receiver initialization only. Return finite numeric frequency-domain
+    symbol estimates of shape (92,4,64), using the bundled FFT/16-QAM convention.
+    The evaluator hard-decides the 48 data subcarriers for each stream and symbol.
+
+    Qubit count, QRC architecture, encoding, measurement and the readout
+    including its architecture and training procedure are open. Use an actual
+    simulated quantum reservoir with input-dependent measured features that
+    contribute to payload predictions. Classical preprocessing and hybrid
+    designs are allowed when the quantum contribution is part of the detector.
+    Use only the provided receiver inputs; training may use the known TS
+    and pilots. Do not read payload labels, infer benchmark seeds, access the
+    evaluator/test files, or substitute a classical-only detector. Use NumPy
+    and the included helpers for readily runnable code. An implementation
+    can use additional libraries if they are already installed on the host.
+    Keep the detect() signature and return interface; the whole implementation
+    may change. Return one complete Python code block.
+
+database:
+  num_islands: 1
+  population_size: 30
+  archive_size: 10
+  random_seed: 42
+
+evaluator:
+  cascade_evaluation: false
+  parallel_evaluations: 1
+  max_retries: 0
+  timeout: 1800
+  enable_artifacts: true
+  evaluator_args:
+    frames: 10
+    workers: 4
+    frame_timeout: 240
+
+evolution_trace:
+  enabled: true
+  include_code: true
+  include_prompts: false
+  include_failures: true

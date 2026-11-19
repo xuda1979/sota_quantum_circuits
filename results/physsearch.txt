@@ -1,0 +1,1 @@
+TIMEOUT/INCONCLUSIVE: killed at 13,300,000+ nodes (~100 min CPU); naive DFS over physical-wire pairs too large to close; no deadline in script. Existence leg uses the paper's published (T=5, Q=10) circuit instead. 2026-11-17.

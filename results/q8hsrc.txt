@@ -1,0 +1,1 @@
+TIMEOUT/INCONCLUSIVE: h-bits-as-operand-sources model at Q=8 (0 ancillas, x-wires + h-bits usable as Toffoli operand sources, 5-op depth). Deadline 7200 s reached after 13,300,000 DFS nodes (7225 s wall, 2026-11-17). No beating circuit found in the explored space; search NOT exhausted, so this is not a NOT-FOUND proof. Recorded honestly as inconclusive.

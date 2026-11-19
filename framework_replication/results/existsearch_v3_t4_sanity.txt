@@ -1,0 +1,7 @@
+existsearch: F24 inversion T=4 Q=10 (2 ancilla) sound search
+outcome: NOT FOUND
+nodes: 1009
+memo_states: 1
+elapsed_seconds: 0.0
+rate_nodes_per_sec: 30977
+model_scope: T-q-anc spatterns under the finalized sound model; NOT FOUND = no circuit in model, TIMEOUT = inconclusive

@@ -1,0 +1,15 @@
+# Separate project with its own git history (paper: discovering SOTA quantum circuits)
+uncompute/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# Build / scratch
+dist/
+build/
+
+# Runtime state
+.future-code/
