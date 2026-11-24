@@ -1,0 +1,63 @@
+{
+ "cells": {},
+ "discoveries": [],
+ "lineage": {
+  "p0001": null,
+  "p0002": "p0001",
+  "p0003": "p0002",
+  "p0004": "p0003",
+  "p0005": "p0004",
+  "p0006": "p0005"
+ },
+ "stagnation": {},
+ "history": [
+  {
+   "iter": 0,
+   "id": "p0001",
+   "family": "llm",
+   "verdict": "invalid[DIRTY_ANCILLA]: op #23 R on qubit 7: wire is nonzero on 16/64 lanes (first: lane 1); a reset of a nonzero wire kicks a random sign that no later op can undo",
+   "kept": false,
+   "t": 11.27
+  },
+  {
+   "iter": 1,
+   "id": "p0002",
+   "family": "llm",
+   "verdict": "invalid[DIRTY_ANCILLA]: op #26 R on qubit 8: wire is nonzero on 16/64 lanes (first: lane 2); a reset of a nonzero wire kicks a random sign that no later op can undo",
+   "kept": false,
+   "t": 11.27
+  },
+  {
+   "iter": 2,
+   "id": "p0003",
+   "family": "llm",
+   "verdict": "invalid[DIRTY_ANCILLA]: op #19 R on qubit 6: wire is nonzero on 32/64 lanes (first: lane 1); a reset of a nonzero wire kicks a random sign that no later op can undo",
+   "kept": false,
+   "t": 19.96
+  },
+  {
+   "iter": 3,
+   "id": "p0004",
+   "family": "llm",
+   "verdict": "invalid[DIRTY_ANCILLA]: op #19 R on qubit 6: wire is nonzero on 32/64 lanes (first: lane 1); a reset of a nonzero wire kicks a random sign that no later op can undo",
+   "kept": false,
+   "t": 28.25
+  },
+  {
+   "iter": 4,
+   "id": "p0005",
+   "family": "llm",
+   "verdict": "invalid[DIRTY_ANCILLA]: op #19 R on qubit 6: wire is nonzero on 32/64 lanes (first: lane 1); a reset of a nonzero wire kicks a random sign that no later op can undo",
+   "kept": false,
+   "t": 36.85
+  },
+  {
+   "iter": 5,
+   "id": "p0006",
+   "family": "llm",
+   "verdict": "invalid[DIRTY_ANCILLA]: op #19 R on qubit 6: wire is nonzero on 32/64 lanes (first: lane 1); a reset of a nonzero wire kicks a random sign that no later op can undo",
+   "kept": false,
+   "t": 45.1
+  }
+ ]
+}

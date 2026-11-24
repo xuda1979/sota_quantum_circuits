@@ -57,16 +57,30 @@ class Evolution:
                 prog = parent_entry.program
                 variants = self.mutators.all_variants(prog)
                 if not variants:
-                    prog = self.proposer.propose(self.archive, None)
-                else:
-                    prog = variants[0]
+                    # no local rewrite exists: hand the parent and its
+                    # evaluator verdict back to the proposer (paper-faithful
+                    # repair, Ext. Data Fig. 1) so e.g. the LLM can fix the
+                    # reported defect instead of proposing blind.
                     feedback = {
                         "parent_id": parent_entry.id,
                         "parent_source": parent_entry.program.source,
                         "parent_verdict": parent_entry.verdict.one_line(),
                     }
+                    prog = self.proposer.propose(self.archive, feedback)
+                else:
+                    prog = variants[0]
             else:
-                prog = self.proposer.propose(self.archive, None)
+                feedback = None
+                if parent_entry is not None:
+                    # no rewriters in play (or no parent at all): hand the
+                    # parent's evaluator verdict to the proposer so an LLM
+                    # agent can repair or improve against it.
+                    feedback = {
+                        "parent_id": parent_entry.id,
+                        "parent_source": parent_entry.program.source,
+                        "parent_verdict": parent_entry.verdict.one_line(),
+                    }
+                prog = self.proposer.propose(self.archive, feedback)
 
             # -- evaluate (ground truth) ------------------------------------
             verdict = self.evaluator.evaluate(prog.source)

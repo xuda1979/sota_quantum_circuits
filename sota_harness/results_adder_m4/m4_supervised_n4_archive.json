@@ -1,0 +1,138 @@
+{
+ "cells": {
+  "9,2": {
+   "id": "p0002",
+   "family": "cdkm",
+   "generation": 1,
+   "source": "def build(ctx):\n    a = ctx.alloc(4); ctx.reg(\"a\", a)\n    b = ctx.alloc(4); ctx.reg(\"b\", b)\n    c = ctx.alloc()                 # single carry ancilla, |0>\n\n    def maj(i):\n        # (a[i], b[i], c) -> (a^b, b^c, carry_out)\n        ctx.cx(b[i], a[i])\n        ctx.cx(c, b[i])\n        ctx.ccx(a[i], b[i], c)\n        ctx.cx(b[i], c)\n\n    def uma(i):\n        # (a^b, b^c, carry_out) -> (sum, b, carry_in)\n        ctx.ccx(a[i], b[i], c)\n        ctx.cx(b[i], c)\n        ctx.cx(c, b[i])\n        ctx.cx(c, a[i])\n\n    for i in range(4):           # forward: propagate carries LSB->MSB\n        maj(i)\n    for i in range(4 - 1, -1, -1):   # backward: uncompute carries MSB->LSB\n        uma(i)\n\n    ctx.free(c)\n",
+   "notes": [
+    "TEMPLATE: cdkm_n4"
+   ],
+   "parent": null,
+   "valid": true,
+   "toffoli": 8.0,
+   "qubits": 9,
+   "tq": 72.0,
+   "category": "OK"
+  }
+ },
+ "discoveries": [
+  "TEMPLATE: cdkm_n4"
+ ],
+ "lineage": {
+  "p0001": null,
+  "p0002": null,
+  "p0003": "p0002",
+  "p0004": null,
+  "p0005": "p0002",
+  "p0006": null,
+  "p0007": "p0002",
+  "p0008": null,
+  "p0009": "p0008",
+  "p0010": null,
+  "p0011": "p0002",
+  "p0012": null
+ },
+ "stagnation": {
+  "cdkm": 5,
+  "llm": 5
+ },
+ "history": [
+  {
+   "iter": 0,
+   "id": "p0001",
+   "family": "llm",
+   "verdict": "invalid[DIRTY_ANCILLA]: op #21 R on qubit 8: wire is nonzero on 128/256 lanes (first: lane 1); a reset of a nonzero wire kicks a random sign that no later op can undo",
+   "kept": false,
+   "t": 9.35
+  },
+  {
+   "iter": 1,
+   "id": "p0002",
+   "family": "cdkm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": true,
+   "t": 9.36
+  },
+  {
+   "iter": 2,
+   "id": "p0003",
+   "family": "llm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 14.28
+  },
+  {
+   "iter": 3,
+   "id": "p0004",
+   "family": "cdkm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 14.28
+  },
+  {
+   "iter": 4,
+   "id": "p0005",
+   "family": "llm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 19.48
+  },
+  {
+   "iter": 5,
+   "id": "p0006",
+   "family": "cdkm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 19.48
+  },
+  {
+   "iter": 6,
+   "id": "p0007",
+   "family": "llm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 25.21
+  },
+  {
+   "iter": 7,
+   "id": "p0008",
+   "family": "cdkm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 25.21
+  },
+  {
+   "iter": 8,
+   "id": "p0009",
+   "family": "llm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 30.84
+  },
+  {
+   "iter": 9,
+   "id": "p0010",
+   "family": "cdkm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 30.84
+  },
+  {
+   "iter": 10,
+   "id": "p0011",
+   "family": "llm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 35.24
+  },
+  {
+   "iter": 11,
+   "id": "p0012",
+   "family": "cdkm",
+   "verdict": "valid: executed_toffoli=8; qubits=9; TQ=72",
+   "kept": false,
+   "t": 35.25
+  }
+ ]
+}

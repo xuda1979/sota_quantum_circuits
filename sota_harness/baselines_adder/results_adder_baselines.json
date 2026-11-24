@@ -1,0 +1,81 @@
+{
+  "task": "in-place reversible addition |a>|b> -> |a+b mod 2^n>|b>",
+  "baseline": {
+    "name": "CDKM ripple-carry (Cuccaro et al. 2004)",
+    "structure": "n MAJ stages LSB->MSB on one carry ancilla, then n UMA stages MSB->LSB; 2n Toffolis, 1 carry ancilla",
+    "gates": ["X", "CNOT", "Toffoli"],
+    "global_phase": 0
+  },
+  "results": [
+    {
+      "n": 3,
+      "eval": "valid: executed_toffoli=6; qubits=7; TQ=42",
+      "T": 6,
+      "Q": 7,
+      "TQ": 42,
+      "shots": 64,
+      "cli": "eval-adder --n 3 baselines_adder/cdkm_n3.py",
+      "exit": 0
+    },
+    {
+      "n": 4,
+      "eval": "valid: executed_toffoli=8; qubits=9; TQ=72",
+      "T": 8,
+      "Q": 9,
+      "TQ": 72,
+      "shots": 256,
+      "cli": "eval-adder --n 4 baselines_adder/cdkm_n4.py",
+      "exit": 0
+    }
+  ],
+  "lower_bound_attempt": {
+    "method": "multiplicative_complexity_lb (span search over degree>=2 products with <=ancillas ancillas), max_depth=10",
+    "targets": "all n sum bits s_i(a,b) as truth-table-packed fns over nvars=2n (a high bits, b low bits)",
+    "results": [
+      {"n": 3, "ancillas": 1, "lb": 2},
+      {"n": 3, "ancillas": 2, "lb": 2},
+      {"n": 3, "ancillas": 3, "lb": 2},
+      {"n": 4, "ancillas": 1, "lb": 2},
+      {"n": 4, "ancillas": 2, "lb": 2},
+      {"n": 4, "ancillas": 3, "lb": 2}
+    ],
+    "interpretation": "Superseded by the strengthened certificate below (the multiplicative_complexity_lb helper early-returns depth+1 on first failure, so these LB=2 entries reflect only a depth-1 probe)."
+  },
+  "improved_construction_2n_minus_2": {
+    "name": "2n-2 Toffoli in-place adder (skip the top MAJ/UMA pair; read the top sum bit off the carry chain)",
+    "idea": "CDKM computes the top carry c_n it then immediately discards; skipping the top MAJ stage and UMA stage and XORing the chain carry c_{n-1} directly into a[n-1] (with b[n-1]) yields the top sum bit, saving 2 Toffolis at identical qubit count. Carries c1..c_{n-1} for the remaining bits are still computed and uncomputed pairwise, so the single carry ancilla returns to |0> (clean).",
+    "gate_count_matches_known_order": "2n-2 Toffoli in-place adders are known in the literature (Takahashi-Kunihiro 2005 use 2n-2 Toffolis with no ancillas; our variant keeps 1 carry ancilla). NOT claimed as a novel gate-count record; claimed contributions are the verified construction + span-model certificate + the agent-vs-hand audit.",
+    "results": [
+      {
+        "n": 3,
+        "eval": "valid: executed_toffoli=4; qubits=7; TQ=28",
+        "T": 4,
+        "Q": 7,
+        "TQ": 28,
+        "vs_cdkm": "T 6->4 (-33%); TQ 42->28 (-33%); same qubits",
+        "cli": "eval-adder --n 3 baselines_adder/t4_adder_n3.py",
+        "exit": 0
+      },
+      {
+        "n": 4,
+        "eval": "valid: executed_toffoli=6; qubits=9; TQ=54",
+        "T": 6,
+        "Q": 9,
+        "TQ": 54,
+        "vs_cdkm": "T 8->6 (-25%); TQ 72->54 (-25%); same qubits",
+        "cli": "eval-adder --n 4 baselines_adder/t6_adder_n4.py",
+        "exit": 0
+      }
+    ]
+  },
+  "strengthened_certificate_n3": {
+    "method": "direct exhaustive 2-product span search: product_span_search(space, targets, 2, first_op, ancillas) over ALL 651 first-op product vectors; plus a 3-product witness",
+    "n": 3,
+    "targets": "s1, s2 (s0 has empty degree>=2 part) over nvars=6; target vecs 0x10, 0x81040",
+    "two_product_result": "impossible for every one of the 651 first ops (5.7 s exhaustive) => no 2-Toffoli-product circuit computes the n=3 adder under the span model (<=2 ancillas)",
+    "three_product_witness": "products {a0*b0, a1*b1, a0*b0*(a1 xor b1)} span all degree>=2 parts (search finds the span in 0.1 s with first_op = a0*b0); p3 packs the two degree-3 monomials a0a1b0 ^ a0b0b1 of c2 into one product",
+    "conclusion": "multiplicative complexity of the n=3 in-place adder = exactly 3 in the span model; our T=4 construction is within 1 of span-optimal and T<=2 is provably impossible",
+    "rank_certificate": "dim span of degree>=2 parts of all sum bits: n=3: 2, n=4: 3, n=5: 4 => T >= 2, 3, 4 (weak, superseded for n=3 by the exact-3 certificate)"
+  },
+  "timestamp": "2026-11-24"
+}

@@ -1,0 +1,65 @@
+{
+ "cells": {
+  "8,1": {
+   "id": "p0002",
+   "family": "cdkm",
+   "generation": 1,
+   "source": "def build(ctx):\n    a = ctx.alloc(3); ctx.reg(\"a\", a)\n    b = ctx.alloc(3); ctx.reg(\"b\", b)\n    c = ctx.alloc()                 # single carry ancilla, |0>\n\n    def maj(i):\n        # (a[i], b[i], c) -> (a^b, b^c, carry_out)\n        ctx.cx(b[i], a[i])\n        ctx.cx(c, b[i])\n        ctx.ccx(a[i], b[i], c)\n        ctx.cx(b[i], c)\n\n    def uma(i):\n        # (a^b, b^c, carry_out) -> (sum, b, carry_in)\n        ctx.ccx(a[i], b[i], c)\n        ctx.cx(b[i], c)\n        ctx.cx(c, b[i])\n        ctx.cx(c, a[i])\n\n    for i in range(3):           # forward: propagate carries LSB->MSB\n        maj(i)\n    for i in range(3 - 1, -1, -1):   # backward: uncompute carries MSB->LSB\n        uma(i)\n\n    ctx.free(c)\n",
+   "notes": [
+    "TEMPLATE: cdkm_n3"
+   ],
+   "parent": null,
+   "valid": true,
+   "toffoli": 6.0,
+   "qubits": 7,
+   "tq": 42.0,
+   "category": "OK"
+  }
+ },
+ "discoveries": [
+  "TEMPLATE: cdkm_n3"
+ ],
+ "lineage": {
+  "p0001": null,
+  "p0002": null,
+  "p0003": null,
+  "p0004": null
+ },
+ "stagnation": {
+  "cdkm": 1
+ },
+ "history": [
+  {
+   "iter": 0,
+   "id": "p0001",
+   "family": "llm",
+   "verdict": "invalid[DIRTY_ANCILLA]: op #19 R on qubit 6: wire is nonzero on 32/64 lanes (first: lane 8); a reset of a nonzero wire kicks a random sign that no later op can undo",
+   "kept": false,
+   "t": 8.01
+  },
+  {
+   "iter": 1,
+   "id": "p0002",
+   "family": "cdkm",
+   "verdict": "valid: executed_toffoli=6; qubits=7; TQ=42",
+   "kept": true,
+   "t": 8.01
+  },
+  {
+   "iter": 2,
+   "id": "p0003",
+   "family": "llm",
+   "verdict": "invalid[DIRTY_ANCILLA]: op #14 R on qubit 6: wire is nonzero on 28/64 lanes (first: lane 9); a reset of a nonzero wire kicks a random sign that no later op can undo",
+   "kept": false,
+   "t": 25.71
+  },
+  {
+   "iter": 3,
+   "id": "p0004",
+   "family": "cdkm",
+   "verdict": "valid: executed_toffoli=6; qubits=7; TQ=42",
+   "kept": false,
+   "t": 25.72
+  }
+ ]
+}
