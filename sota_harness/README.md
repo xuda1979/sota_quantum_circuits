@@ -21,6 +21,15 @@ at every size, in both no-LLM and LLM settings — while matched
 base-mutator controls stay at parity (42/72/110/156). The LLM alone never
 finds the target in any arm.
 
+**Update 2026-11-25 (§3b)**: operator-transfer test on a **held-out task
+family** — the in-place subtractor, the exact gate-mirror of the adder.
+The unchanged operator hits a clean, measurable boundary on the mirror
+(returns None offline; matched arms structural ≡ base). A minimal
+order-agnostic generalization (no task semantics, adder regression
+byte-clean) restores full transfer: the mirrored 2n−2 subtractor is
+loop-discovered in one step (TQ 28/54), all controls stay at parity.
+10-arm ablation: `results_ablation/subtractor_ablation_summary.json`.
+
 ## 主要成果（中文总结）
 
 **任务**：经典量子算法（可逆算术）——Shor 算法内核的就地加法器
@@ -69,6 +78,36 @@ n=3–6，LLM/无LLM，各臂同预算同种子模板，共 14 臂）结果：
 模式一次命中）；匹配的基座对照组全部停在持平（42/72/110/156）。所有臂中
 LLM 自身从未独立发现目标——LLM 家族首次命中 28/54/88 分别在第 6/9/5 轮，
 晚于重写器发现进入档案之后（档案反馈回路放大了发现）。详见英文 §3a。
+
+**2026-11-25 更新（算子迁移：门镜像减法器，留出任务族）**：§3a 的重写
+算子是在加法器 MAJ-优先门序上推导的。为检验它是否只过拟合了这一门序，
+我们构建了加法器的**门镜像**——就地减法器 `|a>|b> → |a−b mod 2^n>|b>`
+（CDKM 加法器逐门取逆；所有门自逆）。同机制、镜像种子、镜像 2n−2 真值
+（n=3/4 TQ 28/54，求值验证；镜像基线 42/72）。
+
+- **阶段 A（边界）**：未改动算子（dcee826）对镜像模板离线返回 None
+  （寄存器提取要求前向辅助函数体内含双下标 `ctx.cx(b[i], a[i])`，而
+  镜像的前向级是 UMA，其 cx 只触及进位线）。匹配 30 迭代无 LLM 臂
+  （n=3/4）证实：结构臂 ≡ 基座臂（1 次求值、29 次去重跳过、持平
+  42/72，四臂完全一致）。
+- **阶段 B（最小泛化）**：加入顺序无关回退（21 行，不含任何任务语
+  义）——前向体缺少双下标 cx 时，寄存器对改从后向辅助函数体提取。
+  加法器回归字节级无损：n=3–6 离线重写输出逐字节一致，实机加法器
+  n=3 结构臂仍一步命中 TQ 28。
+- **迁移结果（匹配臂，30 迭代，同种子同预算）**：泛化后无 LLM 结构臂
+  n=3/4 于**第 1 步变异**命中镜像 2n−2 减法器（TQ 28/54，p0002，与
+  离线拼接逐字节一致）；LLM 结构臂第 2 轮命中（p0003），LLM 随后于
+  第 23 轮在自身家族复现 TQ 28（档案反馈放大，同加法器模式）；所有
+  对照（基座突变体、纯 LLM 28+10 次求值 0 有效、LLM 基座臂 16 次求
+  值从未命中）全部停在持平。聚合：
+  `results_ablation/subtractor_ablation_summary.json`（10 臂）。
+
+**如实声明**：算子设计时仍已知 2n−2 构造，减法器又是该构造的门镜像，
+故**这不是发明，也不声称新门数**（两族皆为已知量级）。更窄而更硬的
+结论是：**在一个任务族门序上推导的结构算子，在留出的镜像任务族上有
+清晰可测的泛化边界；一个不触及任务语义的最小顺序无关修复即恢复完全
+迁移——已知更优构造在匹配预算下一步即可被循环发现，而全部对照均
+不可达。** 复现阶段 A 需检出 dcee826（泛化前重写器）。详见英文 §3b。
 
 **如实声明（证明 vs 声明）**：2n−2 Toffoli 就地加法器为已知构造
 （Takahashi–Kunihiro 量级，本变体保留 1 个进位 ancilla），**不声称门数
@@ -226,6 +265,64 @@ budgets — and without it, the LLM never gets there.** That is the
 mechanism-level contribution: operator design as the lever, with a
 matched ablation isolating its effect.
 
+## 3b. Operator transfer: the gate-mirror subtractor (held-out task family)
+
+§3a's rewriter was derived on the adder's MAJ-first gate ordering. To test
+whether it generalizes beyond that exact ordering — or silently overfits
+one task family — we built the adder's **gate-mirror**: the in-place
+subtractor `|a>|b> -> |a-b mod 2^n>|b>`, obtained by reversing every gate
+of the CDKM adder (all gates self-inverse). Same machinery
+(`run-subtractor`/`eval-subtractor`), mirrored CDKM seeds, mirrored 2n−2
+ground truths (TQ 28/54 at n=3/4, eval-verified; mirrored baselines 42/72).
+
+**Phase A — the boundary (operator unchanged, commit dcee826).** Offline,
+the rewriter returns `None` on the mirrored template: its register
+extraction requires a both-indexed `ctx.cx(b[i], a[i])` inside the
+*forward* helper body, and the mirror's forward stage is UMA, whose cx's
+only touch the carry wire. Matched 30-iter noLlm arms (n=3/4) confirm the
+boundary in-loop: structural ≡ base *exactly* — 1 eval, 29 dedup skips,
+parity 42/72 in all four arms. Logs: `results_ablation/subA_noLlm_*.jsonl`.
+
+**Phase B — minimal generalization.** One order-agnostic fallback (21
+lines, no task semantics): when the forward body lacks a both-indexed cx,
+take the register pair from the *backward* helper body (maj_rev ends with
+`ctx.cx(b[i], a[i])`). Adder regression is byte-clean: offline rewriter
+outputs at n=3–6 are byte-identical pre/post edit, and the live adder n=3
+structural arm still finds TQ 28 in one step
+(`results_ablation/regression/`).
+
+**Transfer result (matched arms, 30 iters, same seeds/budgets):**
+
+| Phase | Setting | n | Base best TQ | Structural best TQ | First hit (structural) |
+|---|---|---|---|---|---|
+| A unchanged op | no-LLM | 3 | 42 | 42 (= base) | never |
+| A unchanged op | no-LLM | 4 | 72 | 72 (= base) | never |
+| B generalized op | no-LLM | 3 | 42 | **28** | iter 1 (p0002, splice) |
+| B generalized op | no-LLM | 4 | 72 | **54** | iter 1 (p0002, splice) |
+| B generalized op | LLM | 3 | 42 | **28** | iter 2 (p0003, splice) |
+
+Every discovery record is byte-identical to the offline generalized-op
+splice (diff-verified) — the loop reaches the mirrored 2n−2 construction
+in **one mutation step** from the mirrored CDKM seed. LLM arms: base —
+16 evals, target never found (the LLM's only valid circuit is a parity
+reproduction at iter 8); structural — the splice finds TQ 28 at iter 2,
+and the LLM later *reproduces* it in its own family at iter 23 (archive
+feedback, the same amplification pattern as the adder). Bonus negative
+controls (pure-LLM, no template): 28+10 evals, 0 valid. Aggregate:
+`results_ablation/subtractor_ablation_summary.json` (10 arms).
+
+**Honest framing.** The operator was still designed with knowledge of the
+2n−2 construction, and the subtractor is that construction's gate-mirror —
+so this is not invention and not a new gate-count claim (both families are
+known-order, Takahashi–Kunihiro style). The claim is narrower and sharper:
+**a structural operator derived on one task family's gate ordering hits a
+clean, measurable generalization boundary on a held-out mirror family; a
+minimal order-agnostic fix that touches no task semantics restores full
+transfer — the known-better construction becomes loop-discoverable in one
+step under matched budgets, while every control (base mutators, LLM-only)
+never reaches it.** Reproducing phase A requires checking out dcee826
+(the pre-generalization rewriter).
+
 ## 4. Proven vs claimed
 
 **Proven** (deterministic evaluator / exhaustive search, artifacts on disk):
@@ -238,6 +335,13 @@ matched ablation isolating its effect.
   `results_ablation/ablation_summary.json` (evals, dedup skips, valid
   counts, TQ trajectories, invalid categories), each number re-derived
   from the raw JSONL logs in the same directory.
+- §3b transfer study: 10/10 subtractor arms summarized in
+  `results_ablation/subtractor_ablation_summary.json`; every structural
+  discovery record byte-compared (`==`) against the offline rewriter
+  splice (`results_ablation/regression/post_mirror_n{3,4}.py`), all
+  True; adder regression pre/post generalization diff-clean at n=3–6;
+  subtractor baselines/ground truths eval-verified via `eval-subtractor`
+  (42/72, 28/54).
 
 **Explicitly not claimed**:
 - No novelty for the 2n−2 Toffoli count (known order).
@@ -266,4 +370,22 @@ for arm in base structural; do
   done
 done
 python3 results_ablation/summarize_ablation.py   # -> ablation_summary.json
+
+# §3b subtractor transfer study (gate-mirror of the adder):
+PYTHONPATH=. python3 -m sota_harness.cli eval-subtractor --n 3 baselines_subtractor/t4_sub_n3.py   # TQ 28
+PYTHONPATH=. python3 -m sota_harness.cli eval-subtractor --n 4 baselines_subtractor/t6_sub_n4.py   # TQ 54
+# phase B arms (generalized op; phase A = same commands at commit dcee826):
+for arm in base structural; do
+  for n in 3 4; do
+    PYTHONPATH=. python3 -m sota_harness.cli run-subtractor --n $n --iters 30 \
+        --mutators $arm --no-llm --quiet \
+        --log results_ablation/subB_noLlm_n${n}_${arm}.jsonl
+  done
+done
+# LLM pair (n=3, template on — matched to the adder LLM arms):
+PYTHONPATH=. python3 -m sota_harness.cli run-subtractor --n 3 --iters 30 \
+    --mutators base --quiet --log results_ablation/subB_llm_n3_base.jsonl
+PYTHONPATH=. python3 -m sota_harness.cli run-subtractor --n 3 --iters 30 \
+    --mutators structural --quiet --log results_ablation/subB_llm_n3_structural.jsonl
+python3 results_ablation/summarize_ablation.py   # -> subtractor_ablation_summary.json
 ```

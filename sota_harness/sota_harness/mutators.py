@@ -207,8 +207,29 @@ class RedundantPairElimRewriter(Rewriter):
         carry = bare.pop()
 
         # b/a registers from the first two-indexed-arg cx in the fn body
-        # (CDKM maj starts with ctx.cx(b[i], a[i])).
+        # (CDKM maj starts with ctx.cx(b[i], a[i])). Order-agnostic
+        # fallback: when the forward stage is carry-wire-only (the
+        # mirrored UMA-first ordering), take the registers from the
+        # backward stage body instead (maj_rev ends ctx.cx(b[i], a[i])).
         m0 = re.search(r"ctx\.cx\((\w+)\[\w+\],\s*(\w+)\[\w+\]\)", body_txt)
+        if m0 is None:
+            bdef = None
+            for k, ln in enumerate(lines):
+                m = re.match(r"^(\s*)def\s+" + re.escape(fn_b) +
+                             r"\(\w+\):", ln)
+                if m:
+                    bdef = (k, len(m.group(1)))
+                    break
+            if bdef is None:
+                return None
+            e_i, e_ind = bdef
+            bbody = []
+            for ln in lines[e_i + 1:]:
+                if ln.strip() and not ln.startswith(" " * (e_ind + 1)):
+                    break
+                bbody.append(ln)
+            m0 = re.search(r"ctx\.cx\((\w+)\[\w+\],\s*(\w+)\[\w+\]\)",
+                           "".join(bbody))
         if not m0:
             return None
         breg, areg = m0.group(1), m0.group(2)

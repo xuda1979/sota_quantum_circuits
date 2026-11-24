@@ -12,6 +12,12 @@ Usage:
       --no-template isolates the LLM, --no-llm isolates the templates.
   python -m sota_harness eval-adder --n {3,4,5,6} <program.py>
       Evaluate one candidate circuit against the adder task.
+  python -m sota_harness run-subtractor --n {3,4,5,6} [--iters N]
+      [--snapshot PATH] [--no-llm] [--no-template]
+      Evolutionary loop on the in-place subtractor task (the gate-mirror
+      of the adder): same flags as run-adder, mirrored CDKM seeds.
+  python -m sota_harness eval-subtractor --n {3,4,5,6} <program.py>
+      Evaluate one candidate circuit against the subtractor task.
   python -m sota_harness certify
       Print the recorded F22/F23/F24 optimality certificates.
 """
@@ -28,6 +34,7 @@ from .mutators import (AncillaPackRewriter, MbuRewriter, MutationPipeline,
                        RedundantPairElimRewriter)
 from .tasks_adder import adder_task
 from .tasks_f24 import f24_task, f24_task_no_lb
+from .tasks_subtractor import subtractor_task
 from .templates_f24 import TEMPLATES
 from .llm import default_llm_fn, make_prompt_builder
 from .proposers import (CompositeProposer, LLMProposer,
@@ -125,6 +132,69 @@ def cmd_run_adder(args) -> int:
     return 0
 
 
+def cmd_eval_subtractor(args) -> int:
+    task = subtractor_task(args.n)
+    ev = Evaluator(task)
+    with open(args.program) as f:
+        src = f.read()
+    v = ev.evaluate(src)
+    print(v.one_line())
+    return 0 if v.valid else 1
+
+
+def cmd_run_subtractor(args) -> int:
+    """Evolutionary loop on the in-place subtractor task (the gate-mirror
+    of the adder): identical machinery and flags to run-adder, with the
+    mirrored (UMA-first) CDKM seed templates. This is the operator-transfer
+    testbed: the structural rewriter was derived on the adder's MAJ-first
+    ordering, so this task family is held out from the operator design.
+    """
+    from .archive import Archive
+    from .templates_subtractor import cdkm_sub_templates
+
+    task = subtractor_task(args.n)
+    ev = Evaluator(task)
+
+    proposers: list = []
+    if not args.no_llm:
+        llm = LLMProposer(
+            llm_fn=default_llm_fn(),
+            prompt_builder=make_prompt_builder(task),
+            family="llm",
+        )
+        proposers.append(llm)
+        if not args.no_template:
+            proposers.append(TemplateProposer(cdkm_sub_templates(args.n),
+                                              family="cdkm_sub"))
+    else:
+        proposers.append(TemplateProposer(cdkm_sub_templates(args.n),
+                                          family="cdkm_sub"))
+    proposer = (proposers[0] if len(proposers) == 1
+                else CompositeProposer(proposers))
+    if args.mutators == "structural":
+        pipe = MutationPipeline([MbuRewriter(), AncillaPackRewriter(),
+                                 RedundantPairElimRewriter()])
+    else:
+        pipe = MutationPipeline([MbuRewriter(), AncillaPackRewriter()])
+
+    arch = Archive()
+    evo = Evolution(task, ev, proposer, mutators=pipe,
+                    max_iters=args.iters, log_path=args.log,
+                    archive=arch, dedup=not args.no_dedup)
+    arch = evo.run(verbose=not args.quiet)
+    if args.snapshot:
+        arch.snapshot(args.snapshot)
+    if arch.best is None:
+        print("no valid circuit found")
+        return 1
+    v = arch.best.verdict
+    print(f"\nbest: {arch.best.id} {v.one_line()}")
+    if "toffoli_lower_bound" in v.meta:
+        print(f"lower bound: {v.meta['toffoli_lower_bound']} "
+              f"(certified optimal: {v.meta['certified_optimal']})")
+    return 0
+
+
 def cmd_certify(_args) -> int:
     """Print the F22/F23/F24 optimality certificates (cheap legs only;
     exhaustive legs' recorded node counts shown; re-run run_all.sh for
@@ -182,6 +252,34 @@ def main(argv=None) -> int:
                          "identical sources every iteration)")
     ra.add_argument("--quiet", action="store_true")
     ra.set_defaults(fn=cmd_run_adder)
+
+    es = sub.add_parser("eval-subtractor",
+                        help="evaluate one candidate against the in-place "
+                             "subtractor task")
+    es.add_argument("--n", type=int, default=3, choices=[3, 4, 5, 6])
+    es.add_argument("program")
+    es.set_defaults(fn=cmd_eval_subtractor)
+
+    rs = sub.add_parser("run-subtractor",
+                        help="evolutionary loop on the in-place subtractor "
+                             "task (gate-mirror of the adder)")
+    rs.add_argument("--n", type=int, default=3, choices=[3, 4, 5, 6])
+    rs.add_argument("--iters", type=int, default=20)
+    rs.add_argument("--log", type=str, default=None)
+    rs.add_argument("--snapshot", type=str, default=None)
+    rs.add_argument("--no-llm", action="store_true",
+                    help="seed templates only (no LLM proposals)")
+    rs.add_argument("--no-template", action="store_true",
+                    help="LLM proposes only (no CDKM template seeds)")
+    rs.add_argument("--mutators", choices=["base", "structural"],
+                    default="base",
+                    help="mutation operators: base (mbu + ancilla_pack) or "
+                         "structural (adds pair_elim ripple-carry rewrite)")
+    rs.add_argument("--no-dedup", action="store_true",
+                    help="disable canonical-source dedup (re-evaluate "
+                         "identical sources every iteration)")
+    rs.add_argument("--quiet", action="store_true")
+    rs.set_defaults(fn=cmd_run_subtractor)
 
     c = sub.add_parser("certify",
                        help="print the optimality certificates")

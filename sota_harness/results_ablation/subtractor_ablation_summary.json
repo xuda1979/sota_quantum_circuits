@@ -1,0 +1,220 @@
+{
+  "unchanged_op_nollm_n3_base": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 42.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        42.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "unchanged_op_nollm_n3_structural": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 42.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        42.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "unchanged_op_nollm_n4_base": {
+    "n": 4,
+    "cdkm_baseline_tq": 72.0,
+    "target_2n_minus_2_tq": 54.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 72.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        72.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "unchanged_op_nollm_n4_structural": {
+    "n": 4,
+    "cdkm_baseline_tq": 72.0,
+    "target_2n_minus_2_tq": 54.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 72.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        72.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "generalized_op_nollm_n3_base": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 42.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        42.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "generalized_op_nollm_n3_structural": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 2,
+    "dedup_skips": 28,
+    "valid": 2,
+    "best_tq": 28.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 14.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        42.0
+      ],
+      [
+        "p0002",
+        28.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "generalized_op_nollm_n4_base": {
+    "n": 4,
+    "cdkm_baseline_tq": 72.0,
+    "target_2n_minus_2_tq": 54.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 72.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        72.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "generalized_op_nollm_n4_structural": {
+    "n": 4,
+    "cdkm_baseline_tq": 72.0,
+    "target_2n_minus_2_tq": 54.0,
+    "evaluations": 2,
+    "dedup_skips": 28,
+    "valid": 2,
+    "best_tq": 54.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 18.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        72.0
+      ],
+      [
+        "p0002",
+        54.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "generalized_op_llm_n3_base": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 16,
+    "dedup_skips": 14,
+    "valid": 2,
+    "best_tq": 42.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0002",
+        42.0
+      ],
+      [
+        "p0009",
+        42.0
+      ]
+    ],
+    "invalid_categories": {
+      "DIRTY_ANCILLA": 12,
+      "WRONG_OUTPUT": 1,
+      "CRASH": 1
+    }
+  },
+  "generalized_op_llm_n3_structural": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 17,
+    "dedup_skips": 13,
+    "valid": 3,
+    "best_tq": 28.0,
+    "best_program": "p0003",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 14.0,
+    "valid_tq_trajectory": [
+      [
+        "p0002",
+        42.0
+      ],
+      [
+        "p0003",
+        28.0
+      ],
+      [
+        "p0024",
+        28.0
+      ]
+    ],
+    "invalid_categories": {
+      "CRASH": 4,
+      "DIRTY_ANCILLA": 9,
+      "WRONG_OUTPUT": 1
+    }
+  }
+}
