@@ -23,7 +23,7 @@ from .analysis import MonoSpace, multiplicative_complexity_lb  # noqa: F401
 from .proposers import (Proposer, TemplateProposer, LLMProposer,  # noqa: F401
                         CompositeProposer)
 from .mutators import (MbuRewriter, AncillaPackRewriter,  # noqa: F401
-                       MutationPipeline)
+                       RedundantPairElimRewriter, MutationPipeline)
 from .evolution import Evolution  # noqa: F401
 from .tasks_f24 import f24_task  # noqa: F401
 from .templates_f24 import TEMPLATES  # noqa: F401

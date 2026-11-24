@@ -1,0 +1,235 @@
+{
+  "nollm_n3_base": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 42.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        42.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "nollm_n3_structural": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 2,
+    "dedup_skips": 28,
+    "valid": 2,
+    "best_tq": 28.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 14.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        42.0
+      ],
+      [
+        "p0002",
+        28.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "nollm_n4_base": {
+    "n": 4,
+    "cdkm_baseline_tq": 72.0,
+    "target_2n_minus_2_tq": 54.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 72.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        72.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "nollm_n4_structural": {
+    "n": 4,
+    "cdkm_baseline_tq": 72.0,
+    "target_2n_minus_2_tq": 54.0,
+    "evaluations": 2,
+    "dedup_skips": 28,
+    "valid": 2,
+    "best_tq": 54.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 18.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        72.0
+      ],
+      [
+        "p0002",
+        54.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "llm_n3_base": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 4,
+    "dedup_skips": 26,
+    "valid": 3,
+    "best_tq": 42.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0002",
+        42.0
+      ],
+      [
+        "p0007",
+        42.0
+      ],
+      [
+        "p0019",
+        42.0
+      ]
+    ],
+    "invalid_categories": {
+      "DIRTY_ANCILLA": 1
+    }
+  },
+  "llm_n3_structural": {
+    "n": 3,
+    "cdkm_baseline_tq": 42.0,
+    "target_2n_minus_2_tq": 28.0,
+    "evaluations": 11,
+    "dedup_skips": 19,
+    "valid": 9,
+    "best_tq": 28.0,
+    "best_program": "p0004",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 14.0,
+    "valid_tq_trajectory": [
+      [
+        "p0003",
+        42.0
+      ],
+      [
+        "p0004",
+        28.0
+      ],
+      [
+        "p0007",
+        28.0
+      ],
+      [
+        "p0015",
+        28.0
+      ],
+      [
+        "p0017",
+        28.0
+      ],
+      [
+        "p0021",
+        28.0
+      ],
+      [
+        "p0023",
+        28.0
+      ],
+      [
+        "p0027",
+        28.0
+      ],
+      [
+        "p0029",
+        28.0
+      ]
+    ],
+    "invalid_categories": {
+      "DIRTY_ANCILLA": 2
+    }
+  },
+  "llm_n4_base": {
+    "n": 4,
+    "cdkm_baseline_tq": 72.0,
+    "target_2n_minus_2_tq": 54.0,
+    "evaluations": 3,
+    "dedup_skips": 27,
+    "valid": 2,
+    "best_tq": 72.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0002",
+        72.0
+      ],
+      [
+        "p0021",
+        72.0
+      ]
+    ],
+    "invalid_categories": {
+      "CRASH": 1
+    }
+  },
+  "llm_n4_structural": {
+    "n": 4,
+    "cdkm_baseline_tq": 72.0,
+    "target_2n_minus_2_tq": 54.0,
+    "evaluations": 9,
+    "dedup_skips": 21,
+    "valid": 6,
+    "best_tq": 54.0,
+    "best_program": "p0003",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 18.0,
+    "valid_tq_trajectory": [
+      [
+        "p0002",
+        72.0
+      ],
+      [
+        "p0003",
+        54.0
+      ],
+      [
+        "p0010",
+        54.0
+      ],
+      [
+        "p0020",
+        54.0
+      ],
+      [
+        "p0024",
+        54.0
+      ],
+      [
+        "p0030",
+        54.0
+      ]
+    ],
+    "invalid_categories": {
+      "CRASH": 1,
+      "DIRTY_ANCILLA": 2
+    }
+  }
+}

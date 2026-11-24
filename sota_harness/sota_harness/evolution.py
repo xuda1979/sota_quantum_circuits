@@ -9,6 +9,11 @@ Harness improvements:
   - deterministic proposers/rewriters make the loop LLM-free-capable,
   - every iteration logged (JSONL) for reproducibility,
   - stagnation-driven parent rotation and cell-diverse context,
+  - canonical-source dedup: identical sources are never re-evaluated
+    (a repeated proposal costs one cheap skip, not an evaluation),
+  - per-parent variant rotation: successive iterations take the next
+    unexplored rewriter variant of the parent instead of variants[0]
+    forever,
   - stops early on certified optimality (T <= task lower bound).
 """
 
@@ -29,7 +34,7 @@ class Evolution:
     def __init__(self, task, evaluator: Evaluator, proposer: Proposer,
                  mutators: Optional[MutationPipeline] = None,
                  archive: Optional[Archive] = None, max_iters: int = 100,
-                 log_path: Optional[str] = None):
+                 log_path: Optional[str] = None, dedup: bool = True):
         self.task = task
         self.evaluator = evaluator
         self.proposer = proposer
@@ -37,6 +42,16 @@ class Evolution:
         self.archive = archive or Archive()
         self.max_iters = max_iters
         self.log_path = log_path
+        self.dedup = dedup
+        self._seen: set[str] = set()          # canonical sources evaluated
+        self._variant_ptr: dict[str, int] = {}  # parent id -> rotation ptr
+        self._repair_ptr = 0                  # rotates repair parents
+        self.evaluations = 0                   # non-dedup evaluations run
+
+    @staticmethod
+    def _canon(src: str) -> str:
+        """Canonical form for dedup: whitespace-normalized source text."""
+        return " ".join(src.split())
 
     def run(self, verbose: bool = True) -> Archive:
         t0 = time.time()
@@ -48,14 +63,21 @@ class Evolution:
                 fam = self.archive.best.family
                 parent_entry = self.archive.parent_for(fam)
             elif any(self.archive.invalid.values()):
-                # paper-faithful repair: rewrite the most recent invalid
-                # program, feeding its evaluator feedback (Ext. Data Fig. 1)
+                # paper-faithful repair: rewrite invalid programs, feeding
+                # evaluator feedback (Ext. Data Fig. 1).  The parent rotates
+                # through the invalid list so that, with dedup on, a skip
+                # cannot freeze the newest invalid program in place forever.
                 fam = max(self.archive.invalid,
                           key=lambda f: len(self.archive.invalid[f]))
-                parent_entry = self.archive.invalid[fam][-1]
+                cands = self.archive.invalid[fam]
+                parent_entry = cands[self._repair_ptr % len(cands)]
+                self._repair_ptr += 1
             if parent_entry is not None and self.mutators.rewriters:
                 prog = parent_entry.program
                 variants = self.mutators.all_variants(prog)
+                if self.dedup:
+                    variants = [v for v in variants
+                                if self._canon(v.source) not in self._seen]
                 if not variants:
                     # no local rewrite exists: hand the parent and its
                     # evaluator verdict back to the proposer (paper-faithful
@@ -68,7 +90,12 @@ class Evolution:
                     }
                     prog = self.proposer.propose(self.archive, feedback)
                 else:
-                    prog = variants[0]
+                    # rotate through this parent's variants instead of
+                    # re-evaluating variants[0] every iteration
+                    key = parent_entry.program.id
+                    i = self._variant_ptr.get(key, 0)
+                    prog = variants[i % len(variants)]
+                    self._variant_ptr[key] = i + 1
             else:
                 feedback = None
                 if parent_entry is not None:
@@ -82,7 +109,30 @@ class Evolution:
                     }
                 prog = self.proposer.propose(self.archive, feedback)
 
+            # -- dedup gate: never pay for the same source twice -----------
+            if self.dedup and self._canon(prog.source) in self._seen:
+                self.archive.log_iteration({
+                    "iter": it, "id": prog.id, "family": prog.family,
+                    "dedup": True, "t": round(time.time() - t0, 2),
+                })
+                if verbose:
+                    print(f"[{it:3d}] {prog.id} ({prog.family}) "
+                          f"dedup skip (source already evaluated)")
+                if self.log_path:
+                    with open(self.log_path, "a") as f:
+                        f.write(json.dumps({
+                            "iter": it, "id": prog.id,
+                            "family": prog.family, "source": prog.source,
+                            "verdict": "dedup", "dedup": True,
+                            "valid": None, "toffoli": None,
+                            "qubits": None, "tq": None,
+                        }) + "\n")
+                continue
+            if self.dedup:
+                self._seen.add(self._canon(prog.source))
+
             # -- evaluate (ground truth) ------------------------------------
+            self.evaluations += 1
             verdict = self.evaluator.evaluate(prog.source)
             kept = self.archive.offer(prog, verdict, prog.family, it)
             self.archive.log_iteration({

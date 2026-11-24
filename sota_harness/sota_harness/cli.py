@@ -24,7 +24,8 @@ import sys
 from .circuit import Program
 from .evaluator import Evaluator
 from .evolution import Evolution
-from .mutators import (AncillaPackRewriter, MbuRewriter, MutationPipeline)
+from .mutators import (AncillaPackRewriter, MbuRewriter, MutationPipeline,
+                       RedundantPairElimRewriter)
 from .tasks_adder import adder_task
 from .tasks_f24 import f24_task, f24_task_no_lb
 from .templates_f24 import TEMPLATES
@@ -100,12 +101,16 @@ def cmd_run_adder(args) -> int:
                                           family="cdkm"))
     proposer = (proposers[0] if len(proposers) == 1
                 else CompositeProposer(proposers))
-    pipe = MutationPipeline([MbuRewriter(), AncillaPackRewriter()])
+    if args.mutators == "structural":
+        pipe = MutationPipeline([MbuRewriter(), AncillaPackRewriter(),
+                                 RedundantPairElimRewriter()])
+    else:
+        pipe = MutationPipeline([MbuRewriter(), AncillaPackRewriter()])
 
     arch = Archive()
     evo = Evolution(task, ev, proposer, mutators=pipe,
                     max_iters=args.iters, log_path=args.log,
-                    archive=arch)
+                    archive=arch, dedup=not args.no_dedup)
     arch = evo.run(verbose=not args.quiet)
     if args.snapshot:
         arch.snapshot(args.snapshot)
@@ -168,6 +173,13 @@ def main(argv=None) -> int:
                     help="seed templates only (no LLM proposals)")
     ra.add_argument("--no-template", action="store_true",
                     help="LLM proposes only (no CDKM template seeds)")
+    ra.add_argument("--mutators", choices=["base", "structural"],
+                    default="base",
+                    help="mutation operators: base (mbu + ancilla_pack) or "
+                         "structural (adds pair_elim ripple-carry rewrite)")
+    ra.add_argument("--no-dedup", action="store_true",
+                    help="disable canonical-source dedup (re-evaluate "
+                         "identical sources every iteration)")
     ra.add_argument("--quiet", action="store_true")
     ra.set_defaults(fn=cmd_run_adder)
 
