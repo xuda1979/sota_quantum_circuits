@@ -5,12 +5,12 @@ Usage:
       Run the F24-inversion evolutionary loop (paper's toy demonstration).
   python -m sota_harness eval-f24 <program.py>
       Evaluate one candidate program against the F24 task.
-  python -m sota_harness run-adder --n {3,4} [--iters N] [--log PATH]
+  python -m sota_harness run-adder --n {3,4,5,6} [--iters N] [--log PATH]
       [--snapshot PATH] [--no-llm] [--no-template]
       Evolutionary loop on the in-place adder task: LLM agent
       (deepseek_v4 proxy, repair-feedback loop) plus CDKM seed templates;
       --no-template isolates the LLM, --no-llm isolates the templates.
-  python -m sota_harness eval-adder --n {3,4} <program.py>
+  python -m sota_harness eval-adder --n {3,4,5,6} <program.py>
       Evaluate one candidate circuit against the adder task.
   python -m sota_harness certify
       Print the recorded F22/F23/F24 optimality certificates.
@@ -159,13 +159,13 @@ def main(argv=None) -> int:
     ea = sub.add_parser("eval-adder",
                         help="evaluate one candidate against the in-place "
                              "adder task")
-    ea.add_argument("--n", type=int, default=3, choices=[3, 4])
+    ea.add_argument("--n", type=int, default=3, choices=[3, 4, 5, 6])
     ea.add_argument("program")
     ea.set_defaults(fn=cmd_eval_adder)
 
     ra = sub.add_parser("run-adder",
                         help="evolutionary loop on the in-place adder task")
-    ra.add_argument("--n", type=int, default=3, choices=[3, 4])
+    ra.add_argument("--n", type=int, default=3, choices=[3, 4, 5, 6])
     ra.add_argument("--iters", type=int, default=20)
     ra.add_argument("--log", type=str, default=None)
     ra.add_argument("--snapshot", type=str, default=None)

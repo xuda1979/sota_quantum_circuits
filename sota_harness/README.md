@@ -1,8 +1,8 @@
 # sota_harness — Classical Quantum Algorithms, Optimized and Audited
 
 Goal: take **classical quantum algorithms** (reversible arithmetic — the
-in-place adder `|a>|b> -> |a+b mod 2^n>|b>`, n=3 and n=4, the kernel inside
-Shor's algorithm), run **our agent** (evolutionary loop with an LLM proposer,
+in-place adder `|a>|b> -> |a+b mod 2^n>|b>`, n=3 through n=6, the kernel
+inside Shor's algorithm), run **our agent** (evolutionary loop with an LLM proposer,
 template proposer, and mutation pipeline) on them, and see whether it matches
 or beats known constructions. Document the outcome honestly.
 
@@ -14,10 +14,12 @@ matched ablation logs in `results_ablation/`.
 **Update 2026-11-24 (§3)**: we extended the agent's *candidate-generation
 machinery* with a general structural mutation operator
 (`RedundantPairElimRewriter`) plus canonical-source dedup, and ran a matched
-ablation (8 arms). The previously out-of-reach 2n−2 circuits (TQ 28/54) are
+ablation (8 arms at n=3/4, extended to n=5/6 — 14 arms total). The
+previously out-of-reach 2n−2 circuits (TQ 28/54/88/130 at n=3/4/5/6) are
 now **discovered by the loop in one mutation step** from the CDKM seed —
-in both no-LLM and LLM settings — while matched base-mutator controls stay
-at parity (42/72). The LLM alone never finds the target in any arm.
+at every size, in both no-LLM and LLM settings — while matched
+base-mutator controls stay at parity (42/72/110/156). The LLM alone never
+finds the target in any arm.
 
 ## 主要成果（中文总结）
 
@@ -49,19 +51,23 @@ CDKM 并达到持平（最好 TQ=42/72；11/12、29/30 有效），但**从未�
 **2026-11-24 更新（结构突变体使优化可被智能体发现）**：为智能体的
 候选生成机制新增通用结构突变算子 `RedundantPairElimRewriter`（纹波进位
 链顶部 MAJ/UMA 对消去：其算出的顶部进位本就被丢弃，最高和位直接从进位
-链读出，省 2 个 Toffoli），并加入规范源码去重。8 臂匹配消融（30 迭代，
-n=3/4，LLM/无LLM，各臂同预算同种子模板）结果：
+链读出，省 2 个 Toffoli），并加入规范源码去重。匹配消融（30 迭代，
+n=3–6，LLM/无LLM，各臂同预算同种子模板，共 14 臂）结果：
 
 | 设置 | n | 基座突变体 best TQ | 结构突变体 best TQ | 结构臂首次命中 |
 |---|---|---|---|---|
 | 无 LLM | 3 | 42 | **28** | 第 1 步变异（p0002） |
 | 无 LLM | 4 | 72 | **54** | 第 1 步变异（p0002） |
+| 无 LLM | 5 | 110 | **88** | 第 1 步变异（p0002） |
+| 无 LLM | 6 | 156 | **130** | 第 1 步变异（p0002） |
 | LLM 开启 | 3 | 42 | **28** | 第 3 轮（cdkm 家族重写产物 p0004） |
 | LLM 开启 | 4 | 72 | **54** | 第 2 轮（cdkm 家族重写产物 p0003） |
+| LLM 开启 | 5 | 110 | **88** | 第 2 轮（cdkm 家族重写产物 p0003） |
 
-结论：先前不可达的 2n−2 构造（TQ 28/54）如今由演化循环从 CDKM 种子
-**一步变异即可发现**；匹配的基座对照组全部停在持平（42/72）。所有臂中
-LLM 自身从未独立发现目标——LLM 家族首次命中 28/54 分别在第 6/9 轮，
+结论：先前不可达的 2n−2 构造（TQ 28/54/88/130）如今由演化循环从 CDKM
+种子**一步变异即可发现**，且该算子完全与规模无关（n=3 到 n=6 同一正则
+模式一次命中）；匹配的基座对照组全部停在持平（42/72/110/156）。所有臂中
+LLM 自身从未独立发现目标——LLM 家族首次命中 28/54/88 分别在第 6/9/5 轮，
 晚于重写器发现进入档案之后（档案反馈回路放大了发现）。详见英文 §3a。
 
 **如实声明（证明 vs 声明）**：2n−2 Toffoli 就地加法器为已知构造
@@ -173,10 +179,11 @@ re-ran a matched ablation:
   outcomes (verified: `--no-dedup` reproduces old behavior; the f24 loop
   found 0 valids before and after).
 
-**Matched ablation** — 8 arms, 30 iterations each, same CDKM seeds, same
+**Matched ablation** — 14 arms, 30 iterations each, same CDKM seeds, same
 budgets; arms differ only in the mutator pipeline (`base` =
-Mbu+AncillaPack; `structural` = Mbu+AncillaPack+PairElim) and LLM on/off.
-Logs: `results_ablation/*.jsonl`, aggregate:
+Mbu+AncillaPack; `structural` = Mbu+AncillaPack+PairElim) and LLM on/off,
+across n=3–6 (no-LLM arms at every n; LLM arms at n=3–5). Logs:
+`results_ablation/*.jsonl`, aggregate:
 `results_ablation/ablation_summary.json`.
 
 | Arm | n | Evals (valid) | Dedup skips | Best TQ | Found 2n−2 |
@@ -185,22 +192,29 @@ Logs: `results_ablation/*.jsonl`, aggregate:
 | no-LLM **structural** | 3 | 2 (2) | 28 | **28** | **yes** |
 | no-LLM base | 4 | 1 (1) | 29 | 72 | no |
 | no-LLM **structural** | 4 | 2 (2) | 28 | **54** | **yes** |
+| no-LLM base | 5 | 1 (1) | 29 | 110 | no |
+| no-LLM **structural** | 5 | 2 (2) | 28 | **88** | **yes** |
+| no-LLM base | 6 | 1 (1) | 29 | 156 | no |
+| no-LLM **structural** | 6 | 2 (2) | 28 | **130** | **yes** |
 | LLM base | 3 | 4 (3) | 26 | 42 | no |
 | LLM **structural** | 3 | 11 (9) | 19 | **28** | **yes** |
 | LLM base | 4 | 3 (2) | 27 | 72 | no |
 | LLM **structural** | 4 | 9 (6) | 21 | **54** | **yes** |
+| LLM base | 5 | 3 (2) | 27 | 110 | no |
+| LLM **structural** | 5 | 8 (7) | 22 | **88** | **yes** |
 
-**Provenance (from raw JSONL)**: in every structural arm the first 28/54
-hit is the `cdkm`-family rewriter splice — byte-identical to the offline
-`RedundantPairElimRewriter` output (loop bounds `range(n-1)`/`range(n-2,
--1, -1)` + the two insert `ctx.cx` lines). The loop therefore reaches the
-improved construction in **one mutation step from the CDKM seed**, in both
-no-LLM and LLM settings. In the LLM structural arms the LLM later
-*reproduces* TQ 28/54 in its own family (first at iter 6 for n=3, iter 9
-for n=4) — only **after** the rewriter's discovery entered the archive
-context, i.e. archive feedback amplifies the discovery. In all four base
-arms — including both LLM arms — **the target is never found** (best
-LLM-proposed valid: TQ 42/72, parity).
+**Provenance (from raw JSONL)**: in every structural arm the first
+28/54/88/130 hit is the `cdkm`-family rewriter splice — byte-identical to
+the offline `RedundantPairElimRewriter` output (loop bounds `range(n-1)`/
+`range(n-2, -1, -1)` + the two insert `ctx.cx` lines), `diff`-verified at
+every n=3–6. The loop therefore reaches the improved construction in
+**one mutation step from the CDKM seed**, at every size, in both no-LLM
+and LLM settings. In the LLM structural arms the LLM later *reproduces*
+the target TQ in its own family (first at iter 6 for n=3, iter 9 for n=4,
+iter 5 for n=5) — only **after** the rewriter's discovery entered the
+archive context, i.e. archive feedback amplifies the discovery. In all
+seven base arms — including all three LLM arms — **the target is never
+found** (best LLM-proposed valid: TQ 42/72/110, parity).
 
 **Honest caveat**: the rewriter was designed with knowledge of the 2n−2
 construction (we knew which pattern to make reachable). The claim is
@@ -220,7 +234,7 @@ matched ablation isolating its effect.
 - MC(n=3) = 3 in the span model (651-first-op exhaustive 2-product failure
   + 3-product witness).
 - Agent-run statistics, counted from the raw JSONL logs (see §2 table).
-- §3a ablation: 8/8 arms summarized in
+- §3a ablation: 14/14 arms summarized in
   `results_ablation/ablation_summary.json` (evals, dedup skips, valid
   counts, TQ trajectories, invalid categories), each number re-derived
   from the raw JSONL logs in the same directory.
@@ -228,8 +242,9 @@ matched ablation isolating its effect.
 **Explicitly not claimed**:
 - No novelty for the 2n−2 Toffoli count (known order).
 - No claim that the agent beat the baseline in the §2-era runs — it did
-  not; §3a's ablation shows the structural-mutator loop reaching 28/54 in
-  one step, but the operator was designed knowing the target.
+  not; §3a's ablation shows the structural-mutator loop reaching
+  28/54/88/130 in one step, but the operator was designed knowing the
+  target.
 - No claim that this is publishable as a new gate-count record.
 
 ## 5. Reproduce
@@ -241,14 +256,14 @@ PYTHONPATH=. python3 -m sota_harness.cli run-adder --n 3 --iters 12 \
     --log results_adder_m4/m4_supervised_n3.jsonl --snapshot ..._archive.json
 # controls: --no-llm (mutation/template only), --no-template (pure LLM)
 
-# §3a matched ablation (8 arms; add --no-llm for the no-LLM arms):
+# §3a matched ablation (no-LLM arms below; for the LLM arms drop --no-llm
+# and name the log llm_n${n}_${arm}.jsonl; n=3-5 for LLM arms, n=3-6 no-LLM):
 for arm in base structural; do
-  PYTHONPATH=. python3 -m sota_harness.cli run-adder --n 3 --iters 30 \
-      --mutators $arm --no-llm --quiet \
-      --log results_ablation/noLlm_n3_${arm}.jsonl
-  PYTHONPATH=. python3 -m sota_harness.cli run-adder --n 4 --iters 30 \
-      --mutators $arm --no-llm --quiet \
-      --log results_ablation/noLlm_n4_${arm}.jsonl
+  for n in 3 4 5 6; do
+    PYTHONPATH=. python3 -m sota_harness.cli run-adder --n $n --iters 30 \
+        --mutators $arm --no-llm --quiet \
+        --log results_ablation/noLlm_n${n}_${arm}.jsonl
+  done
 done
 python3 results_ablation/summarize_ablation.py   # -> ablation_summary.json
 ```

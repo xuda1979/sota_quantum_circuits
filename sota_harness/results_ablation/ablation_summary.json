@@ -83,6 +83,90 @@
     ],
     "invalid_categories": {}
   },
+  "nollm_n5_base": {
+    "n": 5,
+    "cdkm_baseline_tq": 110.0,
+    "target_2n_minus_2_tq": 88.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 110.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        110.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "nollm_n5_structural": {
+    "n": 5,
+    "cdkm_baseline_tq": 110.0,
+    "target_2n_minus_2_tq": 88.0,
+    "evaluations": 2,
+    "dedup_skips": 28,
+    "valid": 2,
+    "best_tq": 88.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 22.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        110.0
+      ],
+      [
+        "p0002",
+        88.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "nollm_n6_base": {
+    "n": 6,
+    "cdkm_baseline_tq": 156.0,
+    "target_2n_minus_2_tq": 130.0,
+    "evaluations": 1,
+    "dedup_skips": 29,
+    "valid": 1,
+    "best_tq": 156.0,
+    "best_program": "p0001",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        156.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
+  "nollm_n6_structural": {
+    "n": 6,
+    "cdkm_baseline_tq": 156.0,
+    "target_2n_minus_2_tq": 130.0,
+    "evaluations": 2,
+    "dedup_skips": 28,
+    "valid": 2,
+    "best_tq": 130.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 26.0,
+    "valid_tq_trajectory": [
+      [
+        "p0001",
+        156.0
+      ],
+      [
+        "p0002",
+        130.0
+      ]
+    ],
+    "invalid_categories": {}
+  },
   "llm_n3_base": {
     "n": 3,
     "cdkm_baseline_tq": 42.0,
@@ -230,6 +314,76 @@
     "invalid_categories": {
       "CRASH": 1,
       "DIRTY_ANCILLA": 2
+    }
+  },
+  "llm_n5_base": {
+    "n": 5,
+    "cdkm_baseline_tq": 110.0,
+    "target_2n_minus_2_tq": 88.0,
+    "evaluations": 3,
+    "dedup_skips": 27,
+    "valid": 2,
+    "best_tq": 110.0,
+    "best_program": "p0002",
+    "found_target_2n_minus_2": false,
+    "improvement_over_cdkm": 0.0,
+    "valid_tq_trajectory": [
+      [
+        "p0002",
+        110.0
+      ],
+      [
+        "p0019",
+        110.0
+      ]
+    ],
+    "invalid_categories": {
+      "WRONG_OUTPUT": 1
+    }
+  },
+  "llm_n5_structural": {
+    "n": 5,
+    "cdkm_baseline_tq": 110.0,
+    "target_2n_minus_2_tq": 88.0,
+    "evaluations": 8,
+    "dedup_skips": 22,
+    "valid": 7,
+    "best_tq": 88.0,
+    "best_program": "p0003",
+    "found_target_2n_minus_2": true,
+    "improvement_over_cdkm": 22.0,
+    "valid_tq_trajectory": [
+      [
+        "p0002",
+        110.0
+      ],
+      [
+        "p0003",
+        88.0
+      ],
+      [
+        "p0006",
+        88.0
+      ],
+      [
+        "p0014",
+        88.0
+      ],
+      [
+        "p0018",
+        88.0
+      ],
+      [
+        "p0022",
+        88.0
+      ],
+      [
+        "p0030",
+        88.0
+      ]
+    ],
+    "invalid_categories": {
+      "DIRTY_ANCILLA": 1
     }
   }
 }

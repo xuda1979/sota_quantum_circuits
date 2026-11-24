@@ -18,14 +18,20 @@ ARMS = [
     ("noLlm_n3_structural", False, 3, "structural"),
     ("noLlm_n4_base", False, 4, "base"),
     ("noLlm_n4_structural", False, 4, "structural"),
+    ("noLlm_n5_base", False, 5, "base"),
+    ("noLlm_n5_structural", False, 5, "structural"),
+    ("noLlm_n6_base", False, 6, "base"),
+    ("noLlm_n6_structural", False, 6, "structural"),
     ("llm_n3_base", True, 3, "base"),
     ("llm_n3_structural", True, 3, "structural"),
     ("llm_n4_base", True, 4, "base"),
     ("llm_n4_structural", True, 4, "structural"),
+    ("llm_n5_base", True, 5, "base"),
+    ("llm_n5_structural", True, 5, "structural"),
 ]
 
-CDKM = {3: 42.0, 4: 72.0}   # baseline TQ (2n Toffolis)
-TARGET = {3: 28.0, 4: 54.0}  # 2n-2 construction TQ
+CDKM = {3: 42.0, 4: 72.0, 5: 110.0, 6: 156.0}   # baseline TQ (2n Toffolis)
+TARGET = {3: 28.0, 4: 54.0, 5: 88.0, 6: 130.0}  # 2n-2 construction TQ
 
 
 def summarize(path: pathlib.Path, n: int) -> dict:
